@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <title>Frontend Mentor | Conference Ticket Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --neutral-0: hsl(0, 0%, 100%);
+      --neutral-300: hsl(252, 6%, 83%);
+      --neutral-500: hsl(245, 15%, 58%);
+      --neutral-700: hsl(245, 19%, 35%);
+      --neutral-900: hsl(248, 70%, 10%);
+      --orange-500: hsl(7, 88%, 67%);
+      --orange-700: hsl(7, 71%, 60%);
+    }
+
+    body {
+      font-family: 'Inconsolata', monospace;
+      background-color: var(--neutral-900);
+      color: var(--neutral-700);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      background-image: url('./assets/images/background-mobile.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    @media (min-width: 768px) {
+      main {
+        background-image: url('./assets/images/background-tablet.png');
+      }
+    }
+
+    @media (min-width: 1440px) {
+      main {
+        background-image: url('./assets/images/background-desktop.png');
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    /* Form section */
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .form-section.hidden {
+      display: none;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .logo img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--neutral-0);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .header p {
+      font-size: 0.875rem;
+      color: var(--neutral-500);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--neutral-300);
+      border-radius: 0.5rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .upload-area:hover {
+      border-color: var(--orange-500);
+      background-color: rgba(255, 107, 53, 0.05);
+    }
+
+    .upload-area:focus-within {
+      outline: 2px solid var(--orange-500);
+      outline-offset: 2px;
+    }
+
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .upload-icon {
+      width: 2rem;
+      height: 2rem;
+      margin: 0 auto 1rem;
+    }
+
+    .upload-text {
+      font-size: 0.875rem;
+      color: var(--neutral-500);
+    }
+
+    .upload-text strong {
+      color: var(--neutral-0);
+    }
+
+    .avatar-preview {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .avatar-preview img {
+      max-width: 100px;
+      height: 100px;
+      border-radius: 0.5rem;
+      object-fit: cover;
+    }
+
+    .clear-upload {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--neutral-300);
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-family: 'Inconsolata', monospace;
+      font-size: 0.75rem;
+      color: var(--neutral-900);
+      transition: background-color 0.3s ease;
+    }
+
+    .clear-upload:hover {
+      background-color: var(--neutral-500);
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--neutral-0);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="file"] {
+      padding: 0.75rem;
+      border: 1px solid var(--neutral-300);
+      border-radius: 0.5rem;
+      background-color: var(--neutral-0);
+      font-family: 'Inconsolata', monospace;
+      font-size: 0.875rem;
+      color: var(--neutral-900);
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      outline: none;
+      border-color: var(--orange-500);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder {
+      color: var(--neutral-500);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--neutral-500);
+    }
+
+    .error-message {
+      font-size: 0.75rem;
+      color: var(--orange-500);
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .form-group.has-error input {
+      border-color: var(--orange-500);
+    }
+
+    .submit-btn {
+      padding: 0.875rem;
+      background: linear-gradient(135deg, var(--orange-500) 0%, var(--orange-700) 100%);
+      color: var(--neutral-0);
+      border: none;
+      border-radius: 0.5rem;
+      font-family: 'Inconsolata', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:focus {
+      outline: 2px solid var(--neutral-0);
+      outline-offset: 2px;
+    }
+
+    /* Ticket section */
+    .ticket-section {
+      display: none;
+      text-align: center;
+    }
+
+    .ticket-section.show {
+      display: block;
+    }
+
+    .congrats-message {
+      margin-bottom: 2rem;
+    }
+
+    .congrats-message h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--neutral-0);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .congrats-message p {
+      font-size: 0.875rem;
+      color: var(--neutral-500);
+    }
+
+    .ticket {
+      background: linear-gradient(135deg, var(--neutral-900) 0%, var(--neutral-700) 100%);
+      border-radius: 1rem;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .ticket::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('./assets/images/pattern-ticket.svg');
+      background-size: cover;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    .ticket-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-logo {
+      margin-bottom: 1.5rem;
+    }
+
+    .ticket-logo img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .ticket-divider {
+      height: 1px;
+      background-color: var(--neutral-500);
+      margin: 1.5rem 0;
+      opacity: 0.3;
+    }
+
+    .ticket-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+    }
+
+    .ticket-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 0.5rem;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .ticket-user-info {
+      text-align: left;
+    }
+
+    .ticket-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--neutral-0);
+    }
+
+    .ticket-username {
+      font-size: 0.75rem;
+      color: var(--neutral-500);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .github-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .ticket-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ticket-mark {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .ticket-details {
+      font-size: 0.75rem;
+      color: var(--neutral-500);
+      text-align: center;
+    }
+
+    .ticket-number {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--neutral-0);
+      font-family: 'Inconsolata', monospace;
+      letter-spacing: 0.1em;
+    }
+
+    .new-ticket-btn {
+      padding: 0.875rem;
+      background: linear-gradient(135deg, var(--orange-500) 0%, var(--orange-700) 100%);
+      color: var(--neutral-0);
+      border: none;
+      border-radius: 0.5rem;
+      font-family: 'Inconsolata', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .new-ticket-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .new-ticket-btn:focus {
+      outline: 2px solid var(--neutral-0);
+      outline-offset: 2px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.75rem;
+      color: var(--neutral-500);
+    }
+
+    footer a {
+      color: var(--orange-500);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    @media (max-width: 375px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .congrats-message h2 {
+        font-size: 1.5rem;
+      }
+
+      .ticket {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <!-- Form Section -->
+      <section class="form-section" aria-labelledby="form-heading">
+        <div class="header">
+          <div class="logo">
+            <img src="./assets/images/logo-full.svg" alt="Coding Conf" />
+          </div>
+          <h1 id="form-heading">Your Journey to Coding Conf 2025 Starts Here!</h1>
+          <p>Secure your spot at next year's biggest coding conference.</p>
+        </div>
+
+        <form id="ticketForm" novalidate>
+          <!-- Avatar Upload -->
+          <div class="form-group">
+            <label for="avatar" id="avatar-label">Upload Avatar</label>
+            <div class="upload-area" role="button" tabindex="0" aria-labelledby="avatar-label">
+              <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14" stroke="#FF6B35"/>
+              </svg>
+              <div class="upload-text">
+                <strong>Drag and drop</strong> or <strong>click to upload</strong>
+              </div>
+              <p class="hint">Upload your photo (JPG or PNG, max size: 500KB).</p>
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/jpeg,image/png"
+                aria-describedby="avatar-hint"
+                required
+              />
+            </div>
+            <div id="avatar-hint" class="sr-only">Upload your photo in JPG or PNG format, maximum 500KB</div>
+            <div id="avatar-preview" class="avatar-preview"></div>
+            <div id="avatar-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Full Name"
+              required
+              aria-describedby="fullName-error"
+            />
+            <div id="fullName-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@email.com"
+              required
+              aria-describedby="email-error"
+            />
+            <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <!-- GitHub Username -->
+          <div class="form-group">
+            <label for="github">GitHub Username</label>
+            <input
+              type="text"
+              id="github"
+              name="github"
+              placeholder="@yourusername"
+              required
+              aria-describedby="github-error"
+            />
+            <div id="github-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <button type="submit" class="submit-btn">Generate My Ticket</button>
+        </form>
+      </section>
+
+      <!-- Ticket Section -->
+      <section class="ticket-section" aria-labelledby="ticket-heading">
+        <div class="congrats-message">
+          <h2 id="ticket-heading">Congrats, <span id="ticket-name-display"></span>! Your ticket is ready.</h2>
+          <p>We've emailed your ticket to <span id="ticket-email-display"></span> and will send updates in the run up to the event.</p>
+        </div>
+
+        <div class="ticket">
+          <div class="ticket-content">
+            <div class="ticket-logo">
+              <img src="./assets/images/logo-mark.svg" alt="" aria-hidden="true" />
+            </div>
+
+            <div class="ticket-user">
+              <img id="ticket-avatar-display" class="ticket-avatar" alt="" />
+              <div class="ticket-user-info">
+                <div class="ticket-name" id="ticket-name-ticket"></div>
+                <div class="ticket-username">
+                  <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  <span id="ticket-github-display"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ticket-divider"></div>
+
+            <div class="ticket-info">
+              <img src="./assets/images/pattern-circle.svg" alt="" aria-hidden="true" />
+              <div class="ticket-details">
+                <span class="ticket-number" id="ticket-number-display"></span>
+                <div>Coding Conf</div>
+                <div>Jan 31, 2025 / Austin, TX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="new-ticket-btn" id="newTicketBtn">Generate Another Ticket</button>
+      </section>
+    </div>
+  </main>
+
+  <footer class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank" rel="noopener noreferrer">Frontend Mentor</a>.
+    Coded by <a href="#">Your Name Here</a>.
+  </footer>
+
+  <script>
+    const form = document.getElementById('ticketForm');
+    const formSection = document.querySelector('.form-section');
+    const ticketSection = document.querySelector('.ticket-section');
+    const newTicketBtn = document.getElementById('newTicketBtn');
+    const uploadArea = document.querySelector('.upload-area');
+    const fileInput = document.getElementById('avatar');
+    const avatarPreviewDiv = document.getElementById('avatar-preview');
+
+    let uploadedAvatar = null;
+
+    // Handle file upload
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--orange-500)';
+      uploadArea.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.style.borderColor = 'var(--neutral-300)';
+      uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--neutral-300)';
+      uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect();
+      }
+    });
+
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+      const file = fileInput.files[0];
+      const errorDiv = document.getElementById('avatar-error');
+
+      clearAvatarError();
+
+      if (!file) return;
+
+      // Validate file type
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        showAvatarError('Please upload a JPG or PNG image');
+        fileInput.value = '';
+        return;
+      }
+
+      // Validate file size (500KB = 512000 bytes)
+      if (file.size > 512000) {
+        showAvatarError('File size must be less than 500KB');
+        fileInput.value = '';
+        return;
+      }
+
+      // Read and display the file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedAvatar = e.target.result;
+        displayAvatarPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function displayAvatarPreview() {
+      avatarPreviewDiv.innerHTML = `
+        <img src="${uploadedAvatar}" alt="Uploaded avatar preview" />
+        <button type="button" class="clear-upload" aria-label="Clear uploaded avatar">Clear</button>
+      `;
+      avatarPreviewDiv.querySelector('.clear-upload').addEventListener('click', clearUpload);
+    }
+
+    function clearUpload() {
+      fileInput.value = '';
+      uploadedAvatar = null;
+      avatarPreviewDiv.innerHTML = '';
+      clearAvatarError();
+    }
+
+    function showAvatarError(message) {
+      const errorDiv = document.getElementById('avatar-error');
+      const formGroup = errorDiv.parentElement;
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      formGroup.classList.add('has-error');
+    }
+
+    function clearAvatarError() {
+      const errorDiv = document.getElementById('avatar-error');
+      const formGroup = errorDiv.parentElement;
+      errorDiv.textContent = '';
+      errorDiv.classList.remove('show');
+      formGroup.classList.remove('has-error');
+    }
+
+    // Form validation
+    function validateForm() {
+      let isValid = true;
+
+      // Validate avatar
+      if (!uploadedAvatar) {
+        showAvatarError('Please upload an avatar');
+        isValid = false;
+      }
+
+      // Validate full name
+      const fullNameInput = document.getElementById('fullName');
+      const fullNameError = document.getElementById('fullName-error');
+      if (!fullNameInput.value.trim()) {
+        fullNameError.textContent = 'Full name is required';
+        fullNameError.classList.add('show');
+        fullNameInput.parentElement.classList.add('has-error');
+        isValid = false;
+      } else {
+        fullNameError.classList.remove('show');
+        fullNameInput.parentElement.classList.remove('has-error');
+      }
+
+      // Validate email
+      const emailInput = document.getElementById('email');
+      const emailError = document.getElementById('email-error');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailInput.value.trim()) {
+        emailError.textContent = 'Email is required';
+        emailError.classList.add('show');
+        emailInput.parentElement.classList.add('has-error');
+        isValid = false;
+      } else if (!emailRegex.test(emailInput.value)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailError.classList.add('show');
+        emailInput.parentElement.classList.add('has-error');
+        isValid = false;
+      } else {
+        emailError.classList.remove('show');
+        emailInput.parentElement.classList.remove('has-error');
+      }
+
+      // Validate GitHub username
+      const githubInput = document.getElementById('github');
+      const githubError = document.getElementById('github-error');
+      if (!githubInput.value.trim()) {
+        githubError.textContent = 'GitHub username is required';
+        githubError.classList.add('show');
+        githubInput.parentElement.classList.add('has-error');
+        isValid = false;
+      } else {
+        githubError.classList.remove('show');
+        githubInput.parentElement.classList.remove('has-error');
+      }
+
+      return isValid;
+    }
+
+    // Generate ticket number (using current timestamp)
+    function generateTicketNumber() {
+      return Math.random().toString(36).substr(2, 9).toUpperCase();
+    }
+
+    // Form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!validateForm()) {
+        return;
+      }
+
+      // Get form data
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const github = document.getElementById('github').value;
+      const ticketNumber = generateTicketNumber();
+
+      // Populate ticket
+      document.getElementById('ticket-name-display').textContent = fullName;
+      document.getElementById('ticket-email-display').textContent = email;
+      document.getElementById('ticket-name-ticket').textContent = fullName;
+      document.getElementById('ticket-github-display').textContent = github;
+      document.getElementById('ticket-avatar-display').src = uploadedAvatar;
+      document.getElementById('ticket-avatar-display').alt = `${fullName}'s avatar`;
+      document.getElementById('ticket-number-display').textContent = ticketNumber;
+
+      // Show ticket, hide form
+      formSection.classList.add('hidden');
+      ticketSection.classList.add('show');
+
+      // Announce success to screen readers
+      const announcement = document.createElement('div');
+      announcement.className = 'sr-only';
+      announcement.setAttribute('role', 'status');
+      announcement.setAttribute('aria-live', 'polite');
+      announcement.textContent = `Ticket generated successfully for ${fullName}`;
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 1000);
+    });
+
+    // Generate another ticket
+    newTicketBtn.addEventListener('click', () => {
+      // Reset form
+      form.reset();
+      uploadedAvatar = null;
+      avatarPreviewDiv.innerHTML = '';
+      clearAvatarError();
+
+      // Clear all error messages
+      document.querySelectorAll('.error-message').forEach(error => {
+        error.classList.remove('show');
+      });
+      document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('has-error');
+      });
+
+      // Show form, hide ticket
+      formSection.classList.remove('hidden');
+      ticketSection.classList.remove('show');
+
+      // Focus on first input
+      document.getElementById('avatar').focus();
+    });
+  </script>
+</body>
+</html>
